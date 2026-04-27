@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BankCorp - Portal Corporativo</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        
+        /* Estilos Gerais */
+        .hidden { display: none !important; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 800px; }
+        h2 { color: #333; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-top: 0; }
+        button { cursor: pointer; font-size: 16px; border: none; border-radius: 4px; transition: 0.3s; }
+        
+        /* Tela de Login */
+        #login-screen { max-width: 400px; text-align: center; }
+        #login-screen input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        #login-screen button { width: 100%; padding: 12px; background-color: #0056b3; color: white; font-weight: bold; margin-top: 10px; }
+        #login-screen button:hover { background-color: #004494; }
+        .logo { font-size: 24px; font-weight: bold; color: #0056b3; margin-bottom: 20px; display: block; }
+
+        /* Tela Principal (Dashboard) */
+        #main-app { width: 900px; }
+        .nav-bar { display: flex; gap: 10px; margin-bottom: 20px; background: #eee; padding: 10px; border-radius: 4px; }
+        .nav-btn { background: transparent; color: #555; padding: 8px 15px; font-size: 14px; }
+        .nav-btn.active { background: #0056b3; color: white; }
+        .nav-btn:hover:not(.active) { background: #ddd; }
+
+        /* Formulário de Transação */
+        .form-group { margin-bottom: 15px; display: flex; gap: 10px; }
+        input, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; flex: 1; }
+        .action-btn { background-color: #28a745; color: white; padding: 10px 20px; }
+        .action-btn:hover { background-color: #218838; }
+
+        /* Tabela */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #0056b3; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        #status { margin-top: 15px; font-weight: bold; color: #555; }
+    </style>
+</head>
+<body>
+
+    <!-- TELA DE LOGIN -->
+    <div id="login-screen" class="container">
+        <span class="logo">🏦 BankCorp</span>
+        <h3>Acesso Corporativo</h3>
+        <input type="text" id="username" placeholder="Usuário" value="">
+        <input type="password" id="password" placeholder="Senha" value="">
+        <button id="btn-login" onclick="fazerLogin()">ENTRAR</button>
+        <p style="font-size: 12px; color: #888; margin-top: 15px;">Ambiente Seguro SSL</p>
+    </div>
+
+    <!-- TELA PRINCIPAL (DASHBOARD) -->
+    <div id="main-app" class="container hidden">
+        <div class="nav-bar">
+            <button class="nav-btn active" id="btn-registro" onclick="mostrarSecao('registro')">Registro de Transações</button>
+            <button class="nav-btn" id="btn-consulta" onclick="mostrarSecao('consulta')">Consultas</button>
+            <button class="nav-btn" id="btn-relatorios" onclick="mostrarSecao('relatorios')">Relatórios</button>
+            <button class="nav-btn" style="margin-left: auto; color: red;" onclick="location.reload()">Sair</button>
+        </div>
+
+        <!-- Seção: Registro (A página que você já tinha) -->
+        <div id="sec-registro">
+            <h2>Lançamento de Transações</h2>
+            <div class="form-group">
+                <input type="text" id="conta" placeholder="Número da Conta" required>
+                <input type="text" id="favorecido" placeholder="Nome do Favorecido" required>
+                <input type="number" id="valor" placeholder="Valor (€)" step="0.01" required>
+                <select id="tipo">
+                    <option value="SEPA">SEPA</option>
+                    <option value="MB WAY">MB WAY</option>
+                    <option value="SIBS">SIBS</option>
+                    <option value="SWIFT">SWIFT</option>
+                </select>
+                <button class="action-btn" id="btn-adicionar" onclick="adicionarLinha()">Adicionar</button>
+            </div>
+
+            <table id="tabelaTransacoes">
+                <thead>
+                    <tr>
+                        <th>Conta</th>
+                        <th>Favorecido</th>
+                        <th>Valor (€)</th>
+                        <th>Tipo</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Linhas adicionadas via JS -->
+                </tbody>
+            </table>
+            <div id="status"></div>
+        </div>
+
+        <!-- Seção: Consulta (Placeholder) -->
+        <div id="sec-consulta" class="hidden">
+            <h2>Consultas</h2>
+            <p>Módulo de consultas em desenvolvimento.</p>
+        </div>
+
+        <!-- Seção: Relatórios (Placeholder) -->
+        <div id="sec-relatorios" class="hidden">
+            <h2>Relatórios Gerenciais</h2>
+            <p>Módulo de relatórios em desenvolvimento.</p>
+        </div>
+    </div>
+
+<script>
+    // Lógica de Login
+    function fazerLogin() {
+        // Simula processamento
+        const btn = document.getElementById('btn-login');
+        btn.innerText = "Autenticando...";
+        btn.style.backgroundColor = "#004494";
+        
+        setTimeout(() => {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+        }, 800); // Delay de 0.8s para parecer real
+    }
+
+    // Navegação do Menu
+    function mostrarSecao(secao) {
+        // Esconde todas
+        document.getElementById('sec-registro').classList.add('hidden');
+        document.getElementById('sec-consulta').classList.add('hidden');
+        document.getElementById('sec-relatorios').classList.add('hidden');
+        
+        // Remove classe active dos botões
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+        // Mostra a selecionada
+        if(secao === 'registro') {
+            document.getElementById('sec-registro').classList.remove('hidden');
+            document.getElementById('btn-registro').classList.add('active');
+        } else if (secao === 'consulta') {
+            document.getElementById('sec-consulta').classList.remove('hidden');
+            document.getElementById('btn-consulta').classList.add('active');
+        } else if (secao === 'relatorios') {
+            document.getElementById('sec-relatorios').classList.remove('hidden');
+            document.getElementById('btn-relatorios').classList.add('active');
+        }
+    }
+
+    // Lógica da Tabela (Do código anterior)
+    function adicionarLinha() {
+        const conta = document.getElementById('conta').value;
+        const favorecido = document.getElementById('favorecido').value;
+        const valor = document.getElementById('valor').value;
+        const tipo = document.getElementById('tipo').value;
+        const statusDiv = document.getElementById('status');
+
+        if (!conta || !favorecido || !valor) {
+            statusDiv.style.color = 'red';
+            statusDiv.innerText = "Erro: Preencha todos os campos.";
+            return;
+        }
+
+        const tabela = document.getElementById('tabelaTransacoes').getElementsByTagName('tbody')[0];
+        const novaLinha = tabela.insertRow();
+
+        novaLinha.insertCell(0).innerText = conta;
+        novaLinha.insertCell(1).innerText = favorecido;
+        novaLinha.insertCell(2).innerText = parseFloat(valor).toFixed(2);
+        novaLinha.insertCell(3).innerText = tipo;
+        
+        const cellStatus = novaLinha.insertCell(4);
+        cellStatus.innerText = "Pendente";
+        cellStatus.style.color = "orange";
+
+        document.getElementById('conta').value = '';
+        document.getElementById('favorecido').value = '';
+        document.getElementById('valor').value = '';
+        
+        statusDiv.style.color = 'green';
+        statusDiv.innerText = "Sucesso: Transação registrada.";
+    }
+</script>
+
+</body>
+</html>
